@@ -1,0 +1,474 @@
+<!DOCTYPE HTML>
+<HTML LANG="en">
+<HEAD>
+<TITLE>Prompt Ionospheric Database</TITLE>
+<META HTTP-EQUIV="content-type" CONTENT="text/html; charset=ISO-8859-1">
+<META HTTP-EQUIV="content-language" CONTENT="en">
+<META NAME="description" CONTENT="Prompt Ionospheric Database">
+<META NAME="keywords" CONTENT="UKSSDC Solar STP data archive">
+<meta charset="UTF-8">
+<meta HTTP-EQUIV="content-language" CONTENT="en">
+<meta name="referrer" content="no-referrer" />
+<link rel="STYLESHEET" href="/common/ukssdc.css" type="text/css" media="all">
+<meta name="DC.creator" content="STFC, Rutherford Appleton Laboratory, RAL Space, UK Solar System Data Centre, support@ukssdc.ac.uk">
+<meta name="e-GMS.subject.category" scheme="GCL" content="Astronomy and space">
+<meta name="e-GMS.accessibility" scheme="WCAG" content="Double-A">
+<meta name="DC.publisher" content="UK Solar System Data Centre, Rutherford Appleton Laboratory, Chilton, Didcot, OX11 0QX. Tel 01235 445173. support@ukssdc.ac.uk">
+<meta name="DC.language" scheme="ISO 639-2" content="eng">
+<meta name="e-GMS.accessibility" content='(pics-?.? "http://www/icra.org/ratingsv02.html" | gen true for "http://www.ukssdc.ac.uk/" r (cz 1 lz 1 nz 1 oz 1 vz 1))'>
+<meta http-equiv="pics-label" content='(pics-1.1 "http://www.icra.org/ratingsv02.html" comment "ICRAonline EN v2.0" l gen true for "http://www.ukssdc.ac.uk" r (nz 1 vz 1 lz 1 oz 1 cz 1) "http://www.rsac.org/ratingsv01.html" l gen true for "http://www.ukssdc.ac.uk" r (n 0 s 0 v 0 l 0))'>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+</HEAD>
+<BODY>
+<div class='header'>
+<div class='banner'>
+<h1 class='banner'>
+<A HREF="/" name='pagetop' id='pagetop'>
+<IMG SRC="/common/ukssdc_logo3.png" ALT="UK Solar System Data Centre"
+width=101 height=68 class="plain"></a>&nbsp;UK Solar System Data Centre
+<!--#echo var="SERVER_LEVEL" -->
+</h1>
+</div>
+<div class="sitelinks" >
+<form action="/cgi-bin/wdcc1/search.pl" class="sitelinks" name='ukssdc_search'>
+<A href="/data_menu.html"><span style="font-size: 120%">Data</span></a>
+&#124; <A HREF="/contact.html" accesskey="9">Contact Us</A>
+&#124; <A HREF="/cgi-bin/wdcc1/userreg.pl" accesskey="8">Register to Retrieve Data</A>
+&#124; <A HREF="/azindex/azindex.html" accesskey="3">Site Index </a>
+&#124; <label for="search">Search</label>
+<input type="text" name="string" id="search" size=10>
+<input type="Submit" value="Go">
+&#124; <A HREF="/access_keys.html" accesskey="0">Access keys</A>
+&#124; <A HREF="/wdcc1/news/news.html">News</A><sup style="color:red;">
+	<!--#config timefmt="*** %d-%b-%Y ***" -->
+	<!--#flastmod virtual="/wdcc1/news/news.html" -->
+	<!--#config timefmt="%A, %d-%b-%Y %T %Z" -->
+	</sup>
+</form>
+</div>
+
+</div>
+<hr>
+
+<div>
+<!-- begin nav -->
+<a href='/index.html'>Home</a>&nbsp;&gt;&nbsp;
+<a href='/wdcc1/wdc_menu.html'>WDC</a>&nbsp;&gt;&nbsp;
+<a href='/wdcc1/data_menu.html'>Data</a>&nbsp;&gt;&nbsp;
+<a href='/wdcc1/iono_menu.html'>Ionospheric</a>&nbsp;&gt;&nbsp;
+<a href='/prompt_database.html'>Prompt</a>&nbsp;&gt;&nbsp;
+Database
+<!-- end nav -->
+</div>
+<script language="JavaScript1.1" type="text/javascript">
+
+function selectall(selector,on) {
+  var i;
+  for (i=0; i<selector.length; i++) {
+    selector.options[i].selected = on;
+  }
+}
+
+function toggle(item) {
+  var opts = document.f.ursi.options;
+
+  for (i=0; i<opts.length; i++) {
+    if (opts[i].text == item) {
+       opts[i].selected = !opts[i].selected;
+       break;
+    }
+  }
+}
+
+function set_today() {
+  var f = document.f;
+  date = new Date();
+  f.syear.value  = date.getFullYear();
+  f.smonth.value = date.getMonth()+1;
+  f.sday.value   = date.getDate();
+  f.eyear.value  = date.getFullYear();
+  f.emonth.value = date.getMonth()+1;
+  f.eday.value   = date.getDate();
+
+  set_datetype(0);
+}
+
+function date_change(diff) {
+  var f = document.f;
+
+  sdate = new Date(f.syear.value,f.smonth.value-1,f.sday.value);
+  date  = new Date(sdate.getTime()+diff*86400000);
+  f.syear.value  = date.getFullYear();
+  f.smonth.value = date.getMonth()+1;
+  f.sday.value   = date.getDate();
+
+  edate = new Date(f.eyear.value,f.emonth.value-1,f.eday.value);
+  date  = new Date(edate.getTime()+diff*86400000);
+  f.eyear.value  = date.getFullYear();
+  f.emonth.value = date.getMonth()+1;
+  f.eday.value   = date.getDate();
+
+  set_datetype(0);
+}
+
+function field_change(field,min,max,diff) {
+   var newvalue = 0;
+
+   newvalue = field.value - (-diff);
+   if (newvalue >= min && newvalue <= max) {
+       field.value = newvalue;
+   } else if (newvalue < min) {
+       field.value = max;
+   } else if (newvalue > max) {
+       field.value = min;
+   }
+   set_datetype(0);
+}
+
+function set_offset() {
+    var f = document.f;
+
+    f.offset.value    = f.recent.value;
+    set_datetype(1);
+}
+
+function set_datetype(element) {
+    var f = document.f;
+
+    f.datetype[element].checked = true;
+}
+
+
+</script>
+
+<h1>Prompt Ionospheric Database</h1>
+<hr>
+
+<form action="/cgi-bin/digisondes/cost_database.pl" name="f" method="POST">
+
+<table border="1">
+<tr>
+  <td colspan=2 align=center>
+    <input type="submit" name="retrieve" value="Retrieve data">
+    <input type="submit" name="schedule" value="Edit schedule">
+    <a href="/prompt_database.html">Help</a>
+  </td>
+</tr>
+
+<tr>
+<td valign="top">
+  <table>
+  <tr>
+    <th colspan=2 align=left><font size="+1">Station</font>
+  </tr>
+  <tr>
+    <td valign="top">
+<select name="ursi" multiple size=18>
+<option value="at138">Athens</option>
+<option value="rl052">Chilton</option>
+<option value="db049">Dourbes</option>
+<option value="ea036">El Arenosillo</option>
+<option value="gm037">Gibilmanna</option>
+<option value="jr055">Juliusruh</option>
+<option value="le061">Lerwick</option>
+<option value="lg178">Longyearbyen</option>
+<option value="ly164">Lycksele</option>
+<option value="mo155">Moscow</option>
+<option value="pq052">Pruhonice</option>
+<option value="ro041">Rome</option>
+<option value="sd266">Salekhard</option>
+<option value="psj5j">Stanley</option>
+<option value="thj77">Thule (Qanaq)</option>
+<option value="eb040">Tortosa</option>
+<option value="tr169">Tromso</option>
+<option value="mz152">Warsaw</option>
+      </select>
+    </td>
+    <td rowspan=3 valign="top">
+      <img src="/wdcc1/ionosondes/cost_map.png" usemap="#map" alt="European map with COST stations">
+        <map name="map">
+          <area shape="circle" coords="225,197,6" href="javascript:toggle('Athens')" alt="Athens">
+          <area shape="circle" coords="171,147,6" href="javascript:toggle('Chilton')" alt="Chilton">
+          <area shape="circle" coords="183,152,6" href="javascript:toggle('Dourbes')" alt="Dourbes">
+          <area shape="circle" coords="159,201,6" href="javascript:toggle('El Arenosillo')" alt="El Arenosillo">
+          <area shape="circle" coords="203,196,6" href="javascript:toggle('Gibilmanna')" alt="Gibilmanna">
+          <area shape="circle" coords="203,136,6" href="javascript:toggle('Juliusruh')" alt="Juliusruh">
+          <area shape="circle" coords="215, 50,6" href="javascript:toggle('Longyearbyen')" alt="Longyearbyen">
+          <area shape="circle" coords="214,100,6" href="javascript:toggle('Lycksele')" alt="Lycksele">
+          <area shape="circle" coords="254,132,6" href="javascript:toggle('Moscow')" alt="Moscow">
+          <area shape="circle" coords="205,153,6" href="javascript:toggle('Pruhonice')" alt="Pruhonice">
+          <area shape="circle" coords="201,182,6" href="javascript:toggle('Rome')" alt="Rome">
+          <area shape="circle" coords="318, 93,6" href="javascript:toggle('Salekhard')" alt="Salekhard">
+          <area shape="circle" coords=" 25, 52,6" href="javascript:toggle('Thule (Qanaq)')" alt="Thule">
+          <area shape="circle" coords="175,186,6" href="javascript:toggle('Tortosa')" alt="Tortosa">
+          <area shape="circle" coords="215, 81,6" href="javascript:toggle('Tromso')" alt="Tromso">
+          <area shape="circle" coords="220,144,6" href="javascript:toggle('Warsaw')" alt="Warsaw">
+        </map>
+    </td>
+  </tr>
+  <tr>
+    <td> <input type="button" name="select_all" value="Select all"
+  		onclick="selectall(ursi,true);">
+    </td>
+  </tr>
+  <tr>
+    <td> <input type="button" name="deselect_all" value="Deselect all"
+  		onclick="selectall(ursi,false);">
+    </td>
+  </tr>
+  </table>
+</td>
+
+<td valign="top">
+  <table>
+  <tr>
+    <th>
+      <input type="radio" name="datetype" value="range" checked>
+    </th>
+    <th align=left colspan=6>
+      <font size="+1">Time Interval</font>
+    </th>
+  </tr>
+  <tr>
+    <th> </th>
+    <th>YYYY</th>
+    <th>MM</th>
+    <th>DD</th>
+    <th>hh</th>
+    <th>mm</th>
+    <th>ss</th>
+  </tr>
+  <tr><th></th>
+      <td align="center">
+      </td>
+      <td align="center">
+      </td>
+      <td align="center">
+      </td>
+      <td align="center">
+      </td>
+      <td align="center">
+      </td>
+      <td align="center">
+      </td>
+  </tr>
+  <tr><th>Start</th>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=5 maxlength=4 name="syear" value="2018">
+      </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="smonth" value="10">
+      </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="sday" value="17">
+      </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="shour" value="0">
+      </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="sminute" value="0">
+      </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="ssecond" value="0">
+      </td>
+  </tr>
+  <tr><th></th>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.syear,1990,2018,-1)" alt="Year -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.syear,1990,2018, 1)" alt="Year +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.smonth,1,12,-1)" alt="Month -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.smonth,1,12, 1)" alt="Month +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.sday,1,31,-1)" alt="Day 1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.sday,1,31, 1)" alt="Day +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.shour,0,23,-1)" alt="Hour -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.shour,0,23, 1)" alt="Hour +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.sminute,0,59,-1)" alt="Minute -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.sminute,0,59, 1)" alt="Minute +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.ssecond,0,59,-1)" alt="Seconds -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.ssecond,0,59, 1)" alt="Seconds +1">
+      </td>
+  </tr>
+ <tr><th></th>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.eyear,1990,2018,-1)" alt="Year -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.eyear,1990,2018, 1)" alt="Year +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.emonth,1,12,-1)" alt="Month -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.emonth,1,12, 1)" alt="Month +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.eday,1,31,-1)" alt="Day -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.eday,1,31, 1)" alt="Day +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.ehour,0,23,-1)" alt="Hour -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.ehour,0,23, 1)" alt="Hour +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.eminute,0,59,-1)" alt="Minute -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.eminute,0,59, 1)" alt="Minute +1">
+      </td>
+      <td align="center">
+      <img src="/icons/left.gif"   width=15 onclick="field_change(f.esecond,0,59,-1)" alt="Seconds -1">
+      <img src="/icons/right.gif"   width=15 onclick="field_change(f.esecond,0,59, 1)" alt="Seconds +1">
+      </td>
+  </tr>
+  <tr><th>End</th>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=5 maxlength=4 name="eyear" value="2018">
+      </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="emonth" value="10">
+      </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="eday" value="17">
+     </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="ehour" value="23">
+      </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="eminute" value="59">
+      </td>
+      <td align="center">
+	<input type="text" onclick="set_datetype(0)" size=3 maxlength=2 name="esecond" value="59">
+      </td>
+  </tr>
+  <tr>
+    <td colspan=2 align="right">
+      <img name="previous" src="/icons/left.gif"
+             onclick="date_change(-1)" alt="Date -1 day">
+    </td>
+    <td colspan=3 align="center">
+      <input type="button" name="today" value="Today"
+             onclick="set_today()" alt="Today">
+    </td>
+    <td colspan=2 align="left">
+      <img name="next" src="/icons/right.gif"
+             onclick="date_change(+1)" alt="Date +1 day">
+    </td>
+  </tr>
+  <tr>
+    <th valign=top rowspan=4>
+      <input type="radio" name="datetype" value="recent">
+    </th>
+    <th align="left" colspan=6>
+      <font size="+1">Recent Data</font>
+    </th>
+  </tr>
+  <tr>
+    <td align=left colspan=3>
+      <select name="recent" size=3 onchange="set_offset()">
+        <option value="30">30 minutes</option>
+        <option value="60">60 minutes</option>
+	<option value="360">6 hours</option>
+	<option value="720">12 hours</option>
+        <option value="1440">24 hours</option>
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <td align=left colspan=6>
+      <input type=radio name=repeat value="no" checked onclick="set_datetype(1)">Now
+    </td>
+  </tr>
+  <tr>
+    <td align=left colspan=6>
+      <input type=radio name=repeat value="yes"
+        onclick="set_datetype(1)">
+	    Repeating from
+      <input type=text name=offset value="0" size=5 maxlength=5>
+            minutes ago
+    </td>
+  </tr>
+  </table>
+</td>
+</tr>
+<tr valign="top">
+<td>
+  <table>
+  <tr><th align=left><font size="+1">Results</font></th></tr>
+  <tr>
+    <th>Type</th>
+    <th>Sort by</th>
+    <th>Destination</th>
+  </tr>
+  <tr>
+    <td>
+<select name="type" size=11>
+<option value="Details">Station details</option><option value="Availability">Autoscaled file availability</option><option value="Parameters">Autoscaled parameters</option><option value="Fplot">Autoscaled parameter plot (F-Plots)</option><option value="POLAN_Profiles">Autoscaled POLAN height profiles</option><option value="NHPC_Profiles">Autoscaled NHPC height profiles</option><option value="SEC">Autoscaled parameters SEC-style</option><option value="Download">Autoscaled file download</option><option value="Manual">Manual parameter data</option><option value="Ionograms">Ionograms</option><option value="POLAN_Manual">Manually scaled POLAN height profiles</option>      </select>
+    </td>
+    <td>
+      <table>
+  	<tr><td>
+  	  <input type="radio" name="sort"
+	      value="Time" checked>Time</td></tr>
+  	<tr><td>
+  	  <input type="radio" name="sort"
+	      value="Station">Station</td></tr>
+      </table>
+    </td>
+    <td>
+      <table>
+  	<tr><td>
+  	  <input type="radio" name="destination"
+	      value="Browser" checked>Browser
+  	</td></tr>
+  	<tr><td>
+  	  <input type="radio" name="destination"
+	      value="File">File for FTP
+  	</td></tr>
+  	<tr><td>
+  	  <input type="radio" name="destination"
+	      value="Email">E-mail
+  	</td></tr>
+      </table>
+    </td>
+  </tr>
+  </table>
+</td>
+<td bgcolor="#08C408" id='status_cell'>
+  <table>
+    <tr><th align="left"><font size="+1">Status</font></th></tr>
+    <tr><td id='status_msg'></td></tr>
+  </table>
+</td>
+</tr>
+</table>
+
+</form>
+<p>
+<hr>
+<div class='footer'>
+<div class="sitelinks" >
+<form action="/cgi-bin/wdcc1/search.pl" class="sitelinks" name='ukssdc_footer_search'>
+<A href="/data_menu.html"><span style="font-size: 120%">Data</span></a>
+&#124; <A HREF="/contact.html">Contact Us</A>
+&#124; <A HREF="/cgi-bin/wdcc1/userreg.pl">Register to Retrieve Data</A>
+&#124; <A HREF="/azindex/azindex.html">Site Index </a>
+&#124; <label for="footer_search">Search</label>
+<input type="text" name="string" id="footer_search" size=10>
+<input type="Submit" value="Go">
+&#124; <A HREF="/access_keys.html">Access keys</A>
+&#124; <A HREF="/wdcc1/news/news.html">News</A>
+</form></div>
+
+<div class='topofpage' ><a href='#pagetop'>top of page</a></div>
+
+<div class='lastupdate'>Page last updated by <a href="/contact.html">Sarah James</a> on Wed Oct 17 02:20:17 2018
+</div>
+<br>
+</div>
+</body>
+</html>
