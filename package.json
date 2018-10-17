@@ -7,7 +7,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-  "request-promise":"latest",
+  "request":"latest",
   "cheerio":"latest",
   "moment":"latest",
   "btoa":"latest"
