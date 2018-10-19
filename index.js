@@ -5,6 +5,14 @@ const btoa = require("btoa");
 now = new moment();
 const cubesatURL = "https://www.ukssdc.ac.uk/cgi-bin/digisondes/cost_database.pl"
 const postbinURL = "http://postb.in/BZWZlXK5"
+
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 sma = now.subtract(6, "months");
 allSelects = [
   ['at138', 'Athens'],
@@ -76,9 +84,36 @@ for (i in allSelects) {
       count++;
       if (all_urls.length == allSelects.length) {
         console.log(all_urls);
+        queryURLs(() => {
+          console.log(all_urls);
+
+        }, 0);
       }
     } else {
       console.error(err)
     }
   });
+}
+// } else {
+//   queryURLs(() => {
+//     console.log(all_urls)
+//   }, 0);
+// }
+
+function queryURLs(callback, countThing) {
+  console.log(countThing)
+  if (countThing < all_urls.length) {
+    if (all_urls[countThing][1] == undefined) {
+      rl.question(all_urls[countThing][0] + ": ", (ans) => {
+        all_urls[countThing][1] = ans;
+
+        queryURLs(callback, countThing + 1);
+      })
+    } else {
+      queryURLs(callback, countThing + 1);
+    }
+  } else {
+    callback();
+    rl.close();
+  }
 }
