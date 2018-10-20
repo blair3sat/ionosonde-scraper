@@ -101,7 +101,6 @@ for (i in allSelects) {
 // }
 
 function queryURLs(callback, countThing) {
-  console.log(countThing)
   if (countThing < all_urls.length) {
     if (all_urls[countThing][1] == undefined) {
       rl.question(all_urls[countThing][0] + ": ", (ans) => {
